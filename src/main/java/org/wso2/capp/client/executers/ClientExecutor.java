@@ -12,6 +12,9 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.wso2.capp.client.command.CommandHandler;
 import org.wso2.capp.client.model.CarbonServer;
 import org.wso2.carbon.application.mgt.stub.upload.types.carbon.UploadedFileItem;
 import org.wso2.carbon.stub.ApplicationAdminExceptionException;
@@ -26,6 +29,8 @@ public class ClientExecutor {
     private String password;
 
     private final String CAR_EXTENSION = ".car";
+
+    private static final Logger log = LogManager.getLogger(ClientExecutor.class);
 
     public ClientExecutor(String serverUrl, String userName, String password) {
         this.serverUrl = serverUrl;
@@ -47,25 +52,21 @@ public class ClientExecutor {
         uploadedFileItem.setFileName(carFile.getName());
         uploadedFileItem.setFileType("jar");
         UploadedFileItem[] fileItems = new UploadedFileItem[]{uploadedFileItem};
-        System.out.println("Uploading " + carFile.getName() + " to " + serverUrl + "...");
+        log.info("Uploading " + carFile.getName() + " to " + serverUrl + "...");
         carbonAppUploaderStub.uploadApp(fileItems);
     }
 
     public void unDeployCAR(String cAppName) throws Exception {
+
         ApplicationAdminStub appAdminStub = getApplicationAdminStub(serverUrl, userName, password);
+        log.info("Undeploying Capp " + cAppName);
         String[] existingApplications = appAdminStub.listAllApplications();
-
-
-//        if (existingApplications != null && Arrays.asList(existingApplications).contains(project.getArtifactId() + "_" + project.getVersion())) {
-//            appAdminStub.deleteApplication(project.getArtifactId() + "_" + project.getVersion());
-//            System.out.println("Located the C-App " + project.getArtifactId() + "_" + project.getVersion() + " and undeployed...");
-//        }
+        appAdminStub.deleteApplication(cAppName);
     }
 
     public String[] getExistingApplicationList() throws Exception {
         ApplicationAdminStub appAdminStub = getApplicationAdminStub(serverUrl, userName, password);
         String[] existingApplications = appAdminStub.listAllApplications();
-
         return existingApplications;
     }
 
@@ -78,7 +79,7 @@ public class ClientExecutor {
         if (authenticationStub.login(username, pwd, url.getHost())) {
             ServiceContext serviceContext = authenticationStub._getServiceClient().getLastOperationContext().getServiceContext();
             String sessionCookie = (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
-            System.out.println("Authentication to " + serverURL + " successful.");
+            log.info("Authentication to " + serverURL + " successful.");
             return sessionCookie;
         } else {
             return null;
