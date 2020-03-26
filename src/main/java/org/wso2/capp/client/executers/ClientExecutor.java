@@ -76,7 +76,7 @@ public class ClientExecutor {
         URL url = new URL(serverURL);
         authenticationStub = new AuthenticationAdminStub(serverURL + "/services/AuthenticationAdmin");
         authenticationStub._getServiceClient().getOptions().setManageSession(true);
-        if (authenticationStub.login(username, pwd, url.getHost())) {
+        if (authenticationStub.login(username, pwd, "127.0.0.1")) {
             ServiceContext serviceContext = authenticationStub._getServiceClient().getLastOperationContext().getServiceContext();
             String sessionCookie = (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
             log.info("Authentication to " + serverURL + " successful.");

@@ -237,7 +237,7 @@
 		<log4j.version>1.2.14</log4j.version>
 		<wsdl4j.version>1.6.2.wso2v2</wsdl4j.version>
 		<org.wso2.securevault.version>1.0.0</org.wso2.securevault.version>
-		<org.wso2.carbon.authenticator.stub.version>3.2.0</org.wso2.carbon.authenticator.stub.version>
+		<org.wso2.carbon.authenticator.stub.version>4.2.0</org.wso2.carbon.authenticator.stub.version>
 		<org.wso2.carbon.roles.mgt.stub.version>3.2.0</org.wso2.carbon.roles.mgt.stub.version>
 		<org.wso2.maven.synapse.plugin.version>2.1.0</org.wso2.maven.synapse.plugin.version>
 		<org.wso2.maven.stratos.plugin.version>2.1.0</org.wso2.maven.stratos.plugin.version>
