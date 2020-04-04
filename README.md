@@ -33,14 +33,18 @@ java -jar capp-client-1.0.0.jar download --server https://localhost:9443 --trust
 ````
 
 ## Instructions for Usage
+### Building the client
+First clone the source code and then execute `mvn clean install` which will generate the executable uber Jar in the target directory.
 
-### Accessing remote WSO2 servers. 
+### Importing certificates to access remote servers. 
 
-First we need to create trust dtore in JKS format and then import the remote servers public certificate to that trustore.
+First we need to create a java keystore in JKS format and then import the remote servers public certificate to that keystore.
 
 ````
 e.g: keytool -import -alias dev-env -file public.cer -storetype JKS -keystore client-truststore.jks
 ````
+
+After that you can execute any operation referring the above example section. 
 
 ## Understanding the output streams
 All the output logs are written into a file and to the console STD_ERROR. All the output data is written to the console std out. 
