@@ -6,43 +6,41 @@ import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
 
-import java.io.File;
-
 public class UndeployCommand implements Command {
     private static final Logger log = LogManager.getLogger(UndeployCommand.class);
 
     private static final String CAR_EXTENSION = ".car";
 
     @Option(name = "--server",
-            usage = "server url flag",
+            usage = "Specify the server url",
             hidden = false,
             aliases = {"--server", "-S"},
             required = true)
     private String serverUrl = "";
 
     @Option(name = "--username",
-            usage = "username flag",
+            usage = "Specify the username",
             hidden = false,
             aliases = {"-U"},
             required = true)
     private String userName = "";
 
     @Option(name = "--password",
-            usage = "password flag",
+            usage = "Specify the password",
             hidden = false,
             aliases = {"-P"},
             required = true)
     private String password = "";
 
     @Option(name = "--trustore-location",
-            usage = "truststore location",
+            usage = "Specify the truststore location",
             hidden = false,
             aliases = {"-T"},
             required = true)
     private String trustoreLocation = "";
 
     @Option(name = "--trustore-password",
-            usage = "Truststore password",
+            usage = "Specify the truststore password",
             hidden = false,
             aliases = {"-TP"},
             required = true)
@@ -52,7 +50,7 @@ public class UndeployCommand implements Command {
             usage = "Provide the name of the CApp",
             aliases = {"-A"},
             required = true)
-    private String carFileName = "";
+    private String cAppName = "";
 
     public UndeployCommand() {
     }
@@ -62,10 +60,14 @@ public class UndeployCommand implements Command {
         setSystemProperties(trustoreLocation, trustorePassword);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
+            String[] appList = client.getExistingApplicationList();
             // Check whether existing capp exists
-            if (client.getExistingApplicationList() != null) {
-                for (String app : client.getExistingApplicationList()) {
-                    if (app.startsWith(carFileName)) {
+            if (appList != null) {
+                for (String app : appList) {
+                    // The CApp name also can have _ characters so we need to only get the correct fraction as the name
+                    int i = app.lastIndexOf("_");
+                    String appName =  app.substring(0, i);
+                    if (appName.equals(cAppName)) {
                         client.unDeployCAR(app);
                     }
                 }

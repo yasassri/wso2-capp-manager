@@ -1,23 +1,23 @@
 package org.wso2.capp.client;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.wso2.capp.client.command.CommandHandler;
 import org.wso2.capp.client.exception.CommandExecutionException;
-import org.wso2.capp.client.executers.ClientExecutor;
 
 public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String args []) throws Exception {
-
-        System.out.println("Works!!!");
         System.setProperty("APP_LOG_ROOT","logs");
-        setSystemProperties("/Users/yasassri/work/services/edinburgh/pack/wso2ei-6.5.0/repository/resources/security/client-truststore.jks", "wso2carbon");
-
+        // To get rid of logger warnings thrown by axis2 components
+        BasicConfigurator.configure();
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
         try {
             // Parse command line arguments
             CommandHandler commandHandler = new CommandHandler();
@@ -27,8 +27,13 @@ public class Main {
 
         } catch (CmdLineException e) {
             logger.error("Error while parsing command line arguments.", e);
+            System.exit(1);
         } catch (CommandExecutionException e) {
             logger.error("Error while executing command.", e);
+            System.exit(1);
+        } catch (Throwable e) {
+            logger.error("An Error occurred while executing the CLI tool ", e);
+            System.exit(1);
         }
     }
 

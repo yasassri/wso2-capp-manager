@@ -2,22 +2,15 @@ package org.wso2.capp.client.executers;
 
 import javax.activation.DataHandler;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
 
-import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ServiceContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.wso2.capp.client.command.CommandHandler;
-import org.wso2.capp.client.model.CarbonServer;
 import org.wso2.carbon.application.mgt.stub.upload.types.carbon.UploadedFileItem;
-import org.wso2.carbon.stub.ApplicationAdminExceptionException;
 import org.wso2.carbon.stub.ApplicationAdminStub;
 import org.wso2.carbon.stub.AuthenticationAdminStub;
 import org.wso2.carbon.stub.CarbonAppUploaderStub;
@@ -38,12 +31,13 @@ public class ClientExecutor {
         this.password = password;
     }
 
-    public void deployCApp(String carFileLocation) throws Exception {
-        File carFile = new File(carFileLocation);
-
-        if (!carFile.isFile() && !carFile.getName().endsWith(CAR_EXTENSION)) {
-            throw new Exception("The provided file is not not found or the extension is wrong " + carFile.getAbsolutePath());
-        }
+    /**
+     * Methos to upload a given Capp to a remote server
+     *
+     * @param carFile
+     * @throws Exception
+     */
+    public void deployCApp(File carFile) throws Exception {
 
         CarbonAppUploaderStub carbonAppUploaderStub = getCarbonAppUploaderStub(userName, password, serverUrl);
         UploadedFileItem uploadedFileItem = new UploadedFileItem();
@@ -56,18 +50,42 @@ public class ClientExecutor {
         carbonAppUploaderStub.uploadApp(fileItems);
     }
 
+    /**
+     * Undeploys a given CApp.
+     * @param cAppName Application Name
+     * @throws Exception
+     */
     public void unDeployCAR(String cAppName) throws Exception {
 
         ApplicationAdminStub appAdminStub = getApplicationAdminStub(serverUrl, userName, password);
-        log.info("Undeploying Capp " + cAppName);
-        String[] existingApplications = appAdminStub.listAllApplications();
+        log.info("Undeploying Capp " + cAppName + " from the server " + serverUrl);
         appAdminStub.deleteApplication(cAppName);
     }
 
+    /**
+     * Returns a @{List} of existing CApps deployed.
+     * @return
+     * @throws Exception
+     */
     public String[] getExistingApplicationList() throws Exception {
         ApplicationAdminStub appAdminStub = getApplicationAdminStub(serverUrl, userName, password);
         String[] existingApplications = appAdminStub.listAllApplications();
         return existingApplications;
+    }
+
+    /**
+     * Downloads a diven CApp and copies to a provided destination.
+     * @param cAppName Name of the Capp
+     * @param downloadLocation Destination where the downloaded CApp should be copied
+     * @throws Exception thrown by the stub
+     */
+    public void downLoadCAR(String cAppName, String downloadLocation) throws Exception {
+
+        ApplicationAdminStub appAdminStub = getApplicationAdminStub(serverUrl, userName, password);
+        log.info("Downloading Capp " + cAppName  + " from the server " + serverUrl);
+        DataHandler dataHandler = appAdminStub.downloadCappArchive(cAppName);
+        File targetFile = new File(downloadLocation + File.separator + cAppName + CAR_EXTENSION);
+        FileUtils.copyInputStreamToFile(dataHandler.getInputStream(), targetFile);
     }
 
 
@@ -79,9 +97,9 @@ public class ClientExecutor {
         if (authenticationStub.login(username, pwd, "127.0.0.1")) {
             ServiceContext serviceContext = authenticationStub._getServiceClient().getLastOperationContext().getServiceContext();
             String sessionCookie = (String) serviceContext.getProperty(HTTPConstants.COOKIE_STRING);
-            log.info("Authentication to " + serverURL + " successful.");
             return sessionCookie;
         } else {
+            log.error("Error occurred while login to the remote server!");
             return null;
         }
     }

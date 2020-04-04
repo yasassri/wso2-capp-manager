@@ -6,9 +6,10 @@ import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
 
+public class DownloadAppCommand implements Command {
+    private static final Logger log = LogManager.getLogger(DeployCommand.class);
 
-public class ListAppsCommand implements Command {
-    private static final Logger log = LogManager.getLogger(ListAppsCommand.class);
+    private static final String CAR_EXTENSION = ".car";
 
     @Option(name = "--server",
             usage = "Specify the server url",
@@ -45,7 +46,18 @@ public class ListAppsCommand implements Command {
             required = true)
     private String trustorePassword = "";
 
-    public ListAppsCommand() {
+    @Option(name = "--app-name",
+            usage = "Specify the Capp Name",
+            aliases = {"-N"})
+    private String cAppName = "";
+
+    @Option(name = "--destination",
+            usage = "Provide the directory to save the CApp.",
+            aliases = {"-D"},
+            required = true)
+    private String destination = "";
+
+    public DownloadAppCommand() {
     }
 
     @Override
@@ -54,16 +66,21 @@ public class ListAppsCommand implements Command {
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
-            if(appList != null) {
-                for (String app : appList) {
-                    log.info("Capp was found with the name " + app);
-                    System.out.println(app);
+            if (appList != null) {
+                    for (String app : appList) {
+                        // The CApp name also can have _ characters so we need to only get the correct fraction as the name
+                        int i = app.lastIndexOf("_");
+                        String appName =  app.substring(0, i);
+                        if (appName.equals(cAppName)) {
+                            log.info("The CApp " + app + " will be downloaded to " + destination);
+                            client.downLoadCAR(app, destination);
+                            return;
+                        }
+                    }
+                    throw new CommandExecutionException("No Carbon application was found with the name " + cAppName);
                 }
-                return;
-            }
-            log.warn("Unable to find any deployed CApps");
         } catch (Exception e) {
-            throw new CommandExecutionException("Error while executing List command", e);
+            throw new CommandExecutionException("Error while executing download command", e);
         }
     }
 
@@ -72,4 +89,5 @@ public class ListAppsCommand implements Command {
         System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
     }
+
 }

@@ -31,8 +31,8 @@ public class CommandHandler extends HelpCommand {
                     impl = UndeployCommand.class),
             @SubCommand(name = "list-apps",
                     impl = ListAppsCommand.class),
-            @SubCommand(name = "help",
-                    impl = HelpCommand.class),
+            @SubCommand(name = "download",
+                    impl = DownloadAppCommand.class),
             @SubCommand(name = "help",
                     impl = HelpCommand.class)
     })
@@ -45,7 +45,6 @@ public class CommandHandler extends HelpCommand {
 
     @Override
     public void execute() throws CommandExecutionException {
-        log.info("Processing the input command.....");
         if (help) {
             super.execute();
             return;

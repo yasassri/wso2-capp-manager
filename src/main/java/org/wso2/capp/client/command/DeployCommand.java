@@ -15,35 +15,35 @@ public class DeployCommand implements Command {
     private static final String CAR_EXTENSION = ".car";
 
     @Option(name = "--server",
-            usage = "server url flag",
+            usage = "Specify the server url",
             hidden = false,
             aliases = {"--server", "-S"},
             required = true)
     private String serverUrl = "";
 
     @Option(name = "--username",
-            usage = "username flag",
+            usage = "Specify the username",
             hidden = false,
             aliases = {"-U"},
             required = true)
     private String userName = "";
 
     @Option(name = "--password",
-            usage = "password flag",
+            usage = "Specify the password",
             hidden = false,
             aliases = {"-P"},
             required = true)
     private String password = "";
 
     @Option(name = "--trustore-location",
-            usage = "truststore location",
+            usage = "Specify the truststore location",
             hidden = false,
             aliases = {"-T"},
             required = true)
     private String trustoreLocation = "";
 
     @Option(name = "--trustore-password",
-            usage = "Truststore password",
+            usage = "Specify the truststore password",
             hidden = false,
             aliases = {"-TP"},
             required = true)
@@ -51,17 +51,16 @@ public class DeployCommand implements Command {
 
     @Option(name = "--force",
             usage = "Force the deployment, undeploy any existing version and deploy new version",
-            aliases = {"-fo"})
+            aliases = {"-FO"})
     private boolean forceDeploy = false;
 
     @Option(name = "--file",
-            usage = "Provide the path to configuration file.",
+            usage = "Provide the path to capp file.",
             aliases = {"-F"},
             required = true)
     private String carFileLocation = "";
 
-    public DeployCommand() {
-    }
+    public DeployCommand() {}
 
     @Override
     public void execute() throws CommandExecutionException {
@@ -69,31 +68,28 @@ public class DeployCommand implements Command {
         try {
             File carFile = new File(carFileLocation);
             if (!carFile.isFile() && !carFile.getName().endsWith(CAR_EXTENSION)) {
-                throw new Exception("The provided file is not not found or the extension is wrong " + carFile.getAbsolutePath());
+                throw new ClientExecutionException("The provided file is not not found or the extension is wrong " + carFile.getAbsolutePath());
             }
 
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
 
-            if (forceDeploy) {
-                // Check whether existing capp exists
-                if (client.getExistingApplicationList() != null) {
-                    for (String app : client.getExistingApplicationList()) {
-                        if (app.startsWith(carFile.getName().split("_")[0])) {
+            String[] appList = client.getExistingApplicationList();
+
+            // Check whether existing capps exists
+            if (appList != null) {
+                for (String app : appList) {
+                    if (app.startsWith(carFile.getName().split("_")[0])) {
+                        if (forceDeploy) {
+                            log.info("The force deploy flag is specified hence undeploying the CApp ", carFile.getName());
                             client.unDeployCAR(app);
                             Thread.sleep(5000);
-                        }
-                    }
-                }
-            } else {
-                if (client.getExistingApplicationList() != null) {
-                    for (String app : client.getExistingApplicationList()) {
-                        if (app.startsWith(carFile.getName().split("_")[0])) {
+                        } else {
                             throw new ClientExecutionException("A app already exists with the name " + carFile.getName());
                         }
                     }
                 }
             }
-            client.deployCApp(carFileLocation);
+            client.deployCApp(carFile);
         } catch (Exception e) {
             throw new CommandExecutionException("Error while executing deploy command", e);
         }

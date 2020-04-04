@@ -17,7 +17,7 @@ public class HelpCommand implements Command {
     @Override
     public void execute() throws CommandExecutionException {
         String ls = System.lineSeparator();
-        String usageBuilder = StringUtil.concatStrings(ls, "Help is on the way!!!!!!!!");
+        String usageBuilder = StringUtil.concatStrings("Help is on the way!!!!!!!!");
         logger.info(usageBuilder);
     }
 
