@@ -26,7 +26,7 @@ If you want to get a processable output you can only read the standard out.
 ````
 java -jar target/capp-client-1.0.0.jar list-apps --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin 2> /dev/null
 ````
-## Download CApp
+### Download CApp
 The download operation allows you to download the specified carbon application to a given location.
 ````
 java -jar capp-client-1.0.0.jar download --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp --destination ./
