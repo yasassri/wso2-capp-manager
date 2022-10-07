@@ -14,10 +14,9 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String args []) throws Exception {
-        System.setProperty("APP_LOG_ROOT","logs");
         // To get rid of logger warnings thrown by axis2 components
         BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
         try {
             // Parse command line arguments
             CommandHandler commandHandler = new CommandHandler();

@@ -12,45 +12,44 @@ public class ListAppsCommand implements Command {
 
     @Option(name = "--server",
             usage = "Specify the server url",
-            hidden = false,
             aliases = {"--server", "-S"},
             required = true)
     private String serverUrl = "";
 
     @Option(name = "--username",
             usage = "Specify the username",
-            hidden = false,
             aliases = {"-U"},
             required = true)
     private String userName = "";
 
     @Option(name = "--password",
             usage = "Specify the password",
-            hidden = false,
             aliases = {"-P"},
             required = true)
     private String password = "";
 
     @Option(name = "--trustore-location",
             usage = "Specify the truststore location",
-            hidden = false,
             aliases = {"-T"},
-            required = true)
-    private String trustoreLocation = "";
+            depends={"--trustore-password"})
+    private String trustoreLocation = "./client-truststore.jks";
 
     @Option(name = "--trustore-password",
             usage = "Specify the truststore password",
-            hidden = false,
-            aliases = {"-TP"},
-            required = true)
-    private String trustorePassword = "";
+            aliases = {"-TP"})
+    private String trustorePassword = "wso2carbon";
+
+    @Option(name = "--insecure",
+            usage = "Disable Hostname Verification",
+            aliases = {"-K"})
+    private boolean insecure = false;
 
     public ListAppsCommand() {
     }
 
     @Override
     public void execute() throws CommandExecutionException {
-        setSystemProperties(trustoreLocation, trustorePassword);
+        setSystemProperties(trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
@@ -67,7 +66,10 @@ public class ListAppsCommand implements Command {
         }
     }
 
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword) {
+    private static void setSystemProperties(String trustStorePath, String trustStorePassword, boolean insecure) {
+        if (insecure) {
+            System.setProperty("httpclient.hostnameVerifier", "AllowAll");
+        }
         System.setProperty("javax.net.ssl.trustStore", trustStorePath);
         System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");

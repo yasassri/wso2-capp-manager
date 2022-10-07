@@ -13,37 +13,31 @@ public class DownloadAppCommand implements Command {
 
     @Option(name = "--server",
             usage = "Specify the server url",
-            hidden = false,
             aliases = {"--server", "-S"},
             required = true)
     private String serverUrl = "";
 
     @Option(name = "--username",
             usage = "Specify the username",
-            hidden = false,
             aliases = {"-U"},
             required = true)
     private String userName = "";
 
     @Option(name = "--password",
             usage = "Specify the password",
-            hidden = false,
             aliases = {"-P"},
             required = true)
     private String password = "";
 
     @Option(name = "--trustore-location",
             usage = "Specify the truststore location",
-            hidden = false,
             aliases = {"-T"},
-            required = true)
+            depends={"--trustore-password"})
     private String trustoreLocation = "";
 
     @Option(name = "--trustore-password",
             usage = "Specify the truststore password",
-            hidden = false,
-            aliases = {"-TP"},
-            required = true)
+            aliases = {"-TP"})
     private String trustorePassword = "";
 
     @Option(name = "--app-name",
@@ -57,12 +51,17 @@ public class DownloadAppCommand implements Command {
             required = true)
     private String destination = "";
 
+    @Option(name = "--insecure",
+            usage = "Disable Hostname Verification",
+            aliases = {"-K"})
+    private boolean insecure = false;
+
     public DownloadAppCommand() {
     }
 
     @Override
     public void execute() throws CommandExecutionException {
-        setSystemProperties(trustoreLocation, trustorePassword);
+        setSystemProperties(trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
@@ -84,7 +83,10 @@ public class DownloadAppCommand implements Command {
         }
     }
 
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword) {
+    private static void setSystemProperties(String trustStorePath, String trustStorePassword, boolean insecure) {
+        if (insecure) {
+            System.setProperty("httpclient.hostnameVerifier", "AllowAll");
+        }
         System.setProperty("javax.net.ssl.trustStore", trustStorePath);
         System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
