@@ -32,6 +32,13 @@ The download operation allows you to download the specified carbon application t
 java -jar capp-manager-1.0.0.jar download --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp --destination ./
 ````
 
+### Insecure Connection
+You can connect to the remote server insecurely as well. For this you can specify the `-K` or `--unsecure` option. In this case you can ommit using the `--trustore-location` option as well. Example below.
+
+```
+java -jar capp-manager-0.1.2.jar list-apps --server https://localhost:9443 --username admin --password admin -K
+```
+
 ## Instructions for Usage
 ### Building the client
 First clone the source code and then execute `mvn clean install` which will generate the executable uber Jar in the target directory.
