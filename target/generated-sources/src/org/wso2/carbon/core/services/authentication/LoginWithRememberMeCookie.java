@@ -3,7 +3,7 @@
  * LoginWithRememberMeCookie.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.6.1-wso2v38  Built on : Sep 02, 2019 (07:15:19 UTC)
+ * by the Apache Axis2 version: 1.6.1-wso2v40  Built on : Nov 05, 2019 (05:03:02 UTC)
  */
 
             

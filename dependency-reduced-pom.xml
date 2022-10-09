@@ -103,4 +103,24 @@
       <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
     </repository>
   </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.wso2.maven</groupId>
+      <artifactId>org.wso2.maven.utils</artifactId>
+      <version>5.2.16</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j.wso2</groupId>
+      <artifactId>wsdl4j</artifactId>
+      <version>1.6.2.wso2v4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>

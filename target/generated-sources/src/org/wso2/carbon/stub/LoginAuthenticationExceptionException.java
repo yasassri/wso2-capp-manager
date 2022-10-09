@@ -3,14 +3,14 @@
  * LoginAuthenticationExceptionException.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.6.1-wso2v38  Built on : Sep 02, 2019 (07:15:11 UTC)
+ * by the Apache Axis2 version: 1.6.1-wso2v40  Built on : Nov 05, 2019 (05:02:53 UTC)
  */
 
 package org.wso2.carbon.stub;
 
 public class LoginAuthenticationExceptionException extends java.lang.Exception{
 
-    private static final long serialVersionUID = 1665115556590L;
+    private static final long serialVersionUID = 1665285364033L;
     
     private org.wso2.carbon.core.services.authentication.LoginAuthenticationException faultMessage;
 

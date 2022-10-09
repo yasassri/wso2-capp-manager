@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
+import org.wso2.capp.client.util.Utils;
 
 public class DownloadAppCommand implements Command {
     private static final Logger log = LogManager.getLogger(DeployCommand.class);
@@ -61,7 +62,7 @@ public class DownloadAppCommand implements Command {
 
     @Override
     public void execute() throws CommandExecutionException {
-        setSystemProperties(trustoreLocation, trustorePassword, insecure);
+        Utils.setUpKeystore(trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();

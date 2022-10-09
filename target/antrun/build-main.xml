@@ -3,7 +3,7 @@
 <target name="main">
   <path id="wsdl2java.classpath">
     <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/1.6.1-wso2v41/axis2-client-1.6.1-wso2v41.jar"/>
-    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/1.6.1-wso2v38/axis2-1.6.1-wso2v38.jar"/>
+    <pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/1.6.1-wso2v40/axis2-1.6.1-wso2v40.jar"/>
     <pathelement location="${settings.localRepository}/wsdl4j/wso2/wsdl4j/1.6.2.wso2v4/1.6.2.wso2v4.wso2v2.jar"/>
     <pathelement location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/1.2.11-wso2v16/axiom-1.2.11-wso2v16.jar"/>
     <pathelement location="${settings.localRepository}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>

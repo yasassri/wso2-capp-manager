@@ -5,6 +5,9 @@ import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
+import org.wso2.capp.client.util.Utils;
+
+import java.net.URL;
 
 
 public class ListAppsCommand implements Command {
@@ -32,7 +35,7 @@ public class ListAppsCommand implements Command {
             usage = "Specify the truststore location",
             aliases = {"-T"},
             depends={"--trustore-password"})
-    private String trustoreLocation = "./client-truststore.jks";
+    private String trustoreLocation = "";
 
     @Option(name = "--trustore-password",
             usage = "Specify the truststore password",
@@ -49,7 +52,8 @@ public class ListAppsCommand implements Command {
 
     @Override
     public void execute() throws CommandExecutionException {
-        setSystemProperties(trustoreLocation, trustorePassword, insecure);
+
+        Utils.setUpKeystore (trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
@@ -64,14 +68,5 @@ public class ListAppsCommand implements Command {
         } catch (Exception e) {
             throw new CommandExecutionException("Error while executing List command", e);
         }
-    }
-
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword, boolean insecure) {
-        if (insecure) {
-            System.setProperty("httpclient.hostnameVerifier", "AllowAll");
-        }
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
     }
 }

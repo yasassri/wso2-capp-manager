@@ -13,10 +13,10 @@ public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    public static void main(String args []) throws Exception {
+    public static void main(String[] args) throws Exception {
         // To get rid of logger warnings thrown by axis2 components
         BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.INFO);
+        org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
         try {
             // Parse command line arguments
             CommandHandler commandHandler = new CommandHandler();
@@ -34,11 +34,5 @@ public class Main {
             logger.error("An Error occurred while executing the CLI tool ", e);
             System.exit(1);
         }
-    }
-
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword){
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
     }
 }

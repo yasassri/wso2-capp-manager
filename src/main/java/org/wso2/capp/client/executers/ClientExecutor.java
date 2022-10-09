@@ -17,9 +17,9 @@ import org.wso2.carbon.stub.CarbonAppUploaderStub;
 
 public class ClientExecutor {
 
-    private String serverUrl;
-    private String userName;
-    private String password;
+    private final String serverUrl;
+    private final String userName;
+    private final String password;
 
     private final String CAR_EXTENSION = ".car";
 

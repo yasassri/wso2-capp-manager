@@ -5,11 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
+import org.wso2.capp.client.util.Utils;
 
 public class UndeployCommand implements Command {
     private static final Logger log = LogManager.getLogger(UndeployCommand.class);
-
-    private static final String CAR_EXTENSION = ".car";
 
     @Option(name = "--server",
             usage = "Specify the server url",
@@ -56,7 +55,7 @@ public class UndeployCommand implements Command {
 
     @Override
     public void execute() throws CommandExecutionException {
-        setSystemProperties(trustoreLocation, trustorePassword, insecure);
+        Utils.setUpKeystore(trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
@@ -74,14 +73,5 @@ public class UndeployCommand implements Command {
         } catch (Exception e) {
             throw new CommandExecutionException("Error while executing deploy command", e);
         }
-    }
-
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword, boolean insecure) {
-        if (insecure) {
-            System.setProperty("httpclient.hostnameVerifier", "AllowAll");
-        }
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
     }
 }
