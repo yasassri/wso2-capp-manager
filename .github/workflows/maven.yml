@@ -40,5 +40,5 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: capp-manager
-        path: capp-manager
+        path: capp-manager-0.1.3
       
