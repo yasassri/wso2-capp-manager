@@ -37,4 +37,8 @@ jobs:
         gu --version
         native-image --version
         native-image -jar target/capp-manager-0.1.3.jar
+    - uses: actions/upload-artifact@v3
+      with:
+        name: capp-manager
+        path: capp-manager
       
