@@ -59,4 +59,3 @@
 /home/yasassri/workspace/projects/capp-manager/wso2-capp-manager/target/generated-sources/src/org/wso2/carbon/stub/LoginWithRememberMeOptionAuthenticationExceptionException.java
 /home/yasassri/workspace/projects/capp-manager/wso2-capp-manager/src/main/java/org/wso2/capp/client/command/DeployCommand.java
 /home/yasassri/workspace/projects/capp-manager/wso2-capp-manager/target/generated-sources/src/org/wso2/carbon/core/services/authentication/LoginWithRememberMeCookie.java
-/home/yasassri/workspace/projects/capp-manager/wso2-capp-manager/src/main/java/org/wso2/capp/client/command/CommandHandler.java

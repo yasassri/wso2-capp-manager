@@ -11,6 +11,10 @@ import java.io.File;
 
 @CommandLine.Command(name = "deploy", description = "Deploys a carbon application")
 public class DeployCommand implements Runnable {
+
+    public DeployCommand() {
+    }
+
     private static final Logger log = LogManager.getLogger(DeployCommand.class);
     private static final String CAR_EXTENSION = ".car";
 

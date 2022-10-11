@@ -17,7 +17,7 @@ public class Main {
 
     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    @Command(name = "capp-mananger", subcommands = {ListAppsCommand.class, DeployCommand.class, UndeployCommand.class, DownloadAppCommand.class})
+    @Command(name = "capp-manager", subcommands = {ListAppsCommand.class, DeployCommand.class, UndeployCommand.class, DownloadAppCommand.class})
     static class BaseCommand implements Runnable {
         @Override
         public void run() {
@@ -29,7 +29,6 @@ public class Main {
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
         try {
-            System.out.println("11111");
             CommandLine cmd = new CommandLine(new BaseCommand());
             cmd.setExecutionStrategy(new CommandLine.RunAll());
             if (args.length == 0) {
@@ -37,12 +36,6 @@ public class Main {
             } else {
                 cmd.execute(args);
             }
-//        } catch (CmdLineException e) {
-//            logger.error("Error while parsing command line arguments.", e);
-//            System.exit(1);
-//        } catch (CommandExecutionException e) {
-//            logger.error("Error while executing command.", e);
-//            System.exit(1);
         } catch (Throwable e) {
             logger.error("An Error occurred while executing the CLI tool ", e);
             System.exit(1);

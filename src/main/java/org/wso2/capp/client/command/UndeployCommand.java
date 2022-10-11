@@ -8,6 +8,10 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "undeploy", description = "Undeploys a given carbon application")
 public class UndeployCommand implements Runnable {
+
+    public UndeployCommand() {
+    }
+
     private static final Logger log = LogManager.getLogger(UndeployCommand.class);
 
     @CommandLine.Option(names = {"-s", "--server"}, description = "EI server url", required = true)

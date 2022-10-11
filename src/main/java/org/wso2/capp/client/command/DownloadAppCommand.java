@@ -10,6 +10,10 @@ import picocli.CommandLine.Command;
 
 @Command(name = "download", description = "Downloads a carbon application")
 public class DownloadAppCommand implements Runnable {
+
+    public DownloadAppCommand() {
+    }
+
     private static final Logger log = LogManager.getLogger(DeployCommand.class);
 
     private static final String CAR_EXTENSION = ".car";

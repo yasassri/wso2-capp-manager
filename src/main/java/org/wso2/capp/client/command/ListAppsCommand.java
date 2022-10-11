@@ -9,6 +9,9 @@ import picocli.CommandLine.Option;
 
 @Command(name = "list-apps", description = "Lists already deployed carbon applications")
 public class ListAppsCommand implements Runnable {
+    public ListAppsCommand() {
+    }
+
     private static final Logger log = LogManager.getLogger(ListAppsCommand.class);
 
     @Option(names = {"-s", "--server"}, description = "EI server url", required = true)

@@ -10,7 +10,7 @@ package org.wso2.carbon.stub;
 
 public class LoginWithRememberMeOptionAuthenticationExceptionException extends java.lang.Exception{
 
-    private static final long serialVersionUID = 1665464843080L;
+    private static final long serialVersionUID = 1665467376470L;
     
     private org.wso2.carbon.core.services.authentication.LoginWithRememberMeOptionAuthenticationException faultMessage;
 

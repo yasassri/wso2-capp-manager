@@ -14,6 +14,7 @@ org/wso2/capp/client/command/HelpCommand.class
 org/wso2/capp/client/command/UndeployCommand.class
 org/wso2/carbon/core/services/authentication/GetAuthenticatorName$Factory.class
 org/wso2/carbon/application/mgt/stub/ListAllApplications$Factory.class
+org/wso2/capp/client/Main$BaseCommand.class
 org/wso2/capp/client/Main.class
 org/wso2/carbon/core/services/authentication/LoginResponse$Factory.class
 org/wso2/carbon/stub/AuthenticationAdminStub$6.class
@@ -22,7 +23,6 @@ org/wso2/capp/client/command/DeployCommand.class
 org/wso2/capp/client/exception/CommandExecutionException.class
 org/wso2/carbon/core/services/authentication/GetPriorityResponse$Factory.class
 org/wso2/carbon/application/mgt/stub/types/carbon/ApplicationMetadata$Factory.class
-org/wso2/capp/client/Main$ParentCommand.class
 org/wso2/carbon/core/services/authentication/ExtensionMapper.class
 org/wso2/carbon/core/services/authentication/xsd/RememberMeData$Factory.class
 org/wso2/carbon/stub/CarbonAppUploader.class
@@ -56,7 +56,6 @@ org/wso2/carbon/application/mgt/stub/GetAppDataResponse$Factory.class
 org/wso2/carbon/application/mgt/stub/upload/types/carbon/UploadedFileItem.class
 org/wso2/carbon/application/mgt/stub/Exception$Factory.class
 org/wso2/carbon/application/mgt/stub/ApplicationAdminException.class
-org/wso2/capp/client/command/CommandHandler.class
 org/wso2/carbon/core/services/authentication/IsDisabled$Factory.class
 org/wso2/carbon/application/mgt/stub/ListAllApplicationsResponse$Factory.class
 org/wso2/carbon/core/services/authentication/LoginWithRememberMeCookieResponse$Factory.class

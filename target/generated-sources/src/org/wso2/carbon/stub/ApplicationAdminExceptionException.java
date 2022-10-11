@@ -10,7 +10,7 @@ package org.wso2.carbon.stub;
 
 public class ApplicationAdminExceptionException extends java.lang.Exception{
 
-    private static final long serialVersionUID = 1665464840889L;
+    private static final long serialVersionUID = 1665467374227L;
     
     private org.wso2.carbon.application.mgt.stub.ApplicationAdminException faultMessage;
 

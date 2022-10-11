@@ -10,7 +10,7 @@ package org.wso2.carbon.stub;
 
 public class LogoutAuthenticationExceptionException extends java.lang.Exception{
 
-    private static final long serialVersionUID = 1665464843074L;
+    private static final long serialVersionUID = 1665467376465L;
     
     private org.wso2.carbon.core.services.authentication.LogoutAuthenticationException faultMessage;
 
