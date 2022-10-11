@@ -29,7 +29,7 @@ jobs:
         java-version: '17'
         components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Example step
+    - name: Conver to Executable
       run: |
         echo "GRAALVM_HOME: $GRAALVM_HOME"
         echo "JAVA_HOME: $JAVA_HOME"
@@ -40,5 +40,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: capp-manager
-        path: capp-manager-0.1.3
-      
+        path: |
+          capp-manager-0.1.3
+          target/capp-manager-0.1.3.jar
+        
