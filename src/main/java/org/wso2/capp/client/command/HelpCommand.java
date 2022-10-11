@@ -10,11 +10,10 @@ import org.wso2.capp.client.util.StringUtil;
  *
  * @since 1.0.0
  */
-public class HelpCommand implements Command {
+public class HelpCommand {
 
     private static final Logger logger = LogManager.getLogger(HelpCommand.class);
 
-    @Override
     public void execute() throws CommandExecutionException {
         String ls = System.lineSeparator();
         String usageBuilder = StringUtil.concatStrings("\nDeploy CApps\n" +

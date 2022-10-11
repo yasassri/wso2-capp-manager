@@ -2,95 +2,63 @@ package org.wso2.capp.client.command;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
 import org.wso2.capp.client.util.Utils;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-public class DownloadAppCommand implements Command {
+@Command(name = "download", description = "Downloads a carbon application")
+public class DownloadAppCommand implements Runnable {
     private static final Logger log = LogManager.getLogger(DeployCommand.class);
 
     private static final String CAR_EXTENSION = ".car";
 
-    @Option(name = "--server",
-            usage = "Specify the server url",
-            aliases = {"--server", "-S"},
-            required = true)
+    @CommandLine.Option(names = {"-s", "--server"}, description = "EI server url", required = true)
     private String serverUrl = "";
 
-    @Option(name = "--username",
-            usage = "Specify the username",
-            aliases = {"-U"},
-            required = true)
+    @CommandLine.Option(names = {"-u", "--username"}, description = "Username of the user to access the server", required = true)
     private String userName = "";
 
-    @Option(name = "--password",
-            usage = "Specify the password",
-            aliases = {"-P"},
-            required = true)
+    @CommandLine.Option(names = {"-p", "--password"}, description = "The password of the server user", required = true)
     private String password = "";
 
-    @Option(name = "--trustore-location",
-            usage = "Specify the truststore location",
-            aliases = {"-T"},
-            depends={"--trustore-password"})
+    @CommandLine.Option(names = {"-tl", "--trustore-location"}, description = "The truststore location")
     private String trustoreLocation = "";
 
-    @Option(name = "--trustore-password",
-            usage = "Specify the truststore password",
-            aliases = {"-TP"})
-    private String trustorePassword = "";
+    @CommandLine.Option(names = {"-tp", "--trustore-password"}, description = "The truststore password")
+    private String trustorePassword = "wso2carbon";
 
-    @Option(name = "--app-name",
-            usage = "Specify the Capp Name",
-            aliases = {"-N"})
-    private String cAppName = "";
-
-    @Option(name = "--destination",
-            usage = "Provide the directory to save the CApp.",
-            aliases = {"-D"},
-            required = true)
-    private String destination = "";
-
-    @Option(name = "--insecure",
-            usage = "Disable Hostname Verification",
-            aliases = {"-K"})
+    @CommandLine.Option(names = {"-k", "--insecure"}, description = "Disable Hostname Verification")
     private boolean insecure = false;
 
-    public DownloadAppCommand() {
-    }
+    @CommandLine.Option(names = {"-an", "--app-name"}, description = "Specify the name of the app", required = true)
+    private String cAppName = "";
+
+    @CommandLine.Option(names = {"-d", "--destination"}, description = "Specify the truststore password", required = true)
+    private String destination = "";
 
     @Override
-    public void execute() throws CommandExecutionException {
+    public void run() {
         Utils.setUpKeystore(trustoreLocation, trustorePassword, insecure);
         try {
             ClientExecutor client = new ClientExecutor(serverUrl, userName, password);
             String[] appList = client.getExistingApplicationList();
             if (appList != null) {
-                    for (String app : appList) {
-                        // The CApp name also can have _ characters so we need to only get the correct fraction as the name
-                        int i = app.lastIndexOf("_");
-                        String appName =  app.substring(0, i);
-                        if (appName.equals(cAppName)) {
-                            log.info("The CApp " + app + " will be downloaded to " + destination);
-                            client.downLoadCAR(app, destination);
-                            return;
-                        }
+                for (String app : appList) {
+                    // The CApp name also can have _ characters so we need to only get the correct fraction as the name
+                    int i = app.lastIndexOf("_");
+                    String appName = app.substring(0, i);
+                    if (appName.equals(cAppName)) {
+                        log.info("The CApp " + app + " will be downloaded to " + destination);
+                        client.downLoadCAR(app, destination);
+                        return;
                     }
-                    throw new CommandExecutionException("No Carbon application was found with the name " + cAppName);
                 }
+                throw new CommandExecutionException("No Carbon application was found with the name " + cAppName);
+            }
         } catch (Exception e) {
-            throw new CommandExecutionException("Error while executing download command", e);
+            Utils.handleError(e);
         }
     }
-
-    private static void setSystemProperties(String trustStorePath, String trustStorePassword, boolean insecure) {
-        if (insecure) {
-            System.setProperty("httpclient.hostnameVerifier", "AllowAll");
-        }
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword);
-        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-    }
-
 }

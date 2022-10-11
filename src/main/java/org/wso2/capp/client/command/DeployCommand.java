@@ -2,67 +2,44 @@ package org.wso2.capp.client.command;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.kohsuke.args4j.Option;
 import org.wso2.capp.client.exception.ClientExecutionException;
-import org.wso2.capp.client.exception.CommandExecutionException;
 import org.wso2.capp.client.executers.ClientExecutor;
 import org.wso2.capp.client.util.Utils;
+import picocli.CommandLine;
 
 import java.io.File;
 
-public class DeployCommand implements Command {
+@CommandLine.Command(name = "deploy", description = "Deploys a carbon application")
+public class DeployCommand implements Runnable {
     private static final Logger log = LogManager.getLogger(DeployCommand.class);
     private static final String CAR_EXTENSION = ".car";
 
-    @Option(name = "--server",
-            usage = "Specify the server url",
-            aliases = {"--server", "-S"},
-            required = true)
+    @CommandLine.Option(names = {"-s", "--server"}, description = "EI server url", required = true)
     private String serverUrl = "";
 
-    @Option(name = "--username",
-            usage = "Specify the username",
-            aliases = {"-U"},
-            required = true)
+    @CommandLine.Option(names = {"-u", "--username"}, description = "Username of the user to access the server", required = true)
     private String userName = "";
 
-    @Option(name = "--password",
-            usage = "Specify the password",
-            aliases = {"-P"},
-            required = true)
+    @CommandLine.Option(names = {"-p", "--password"}, description = "The password of the server user", required = true)
     private String password = "";
 
-    @Option(name = "--trustore-location",
-            usage = "Specify the truststore location",
-            aliases = {"-T"},
-            depends={"--trustore-password"})
+    @CommandLine.Option(names = {"-tl", "--trustore-location"}, description = "The truststore location")
     private String trustoreLocation = "";
 
-    @Option(name = "--trustore-password",
-            usage = "Specify the truststore password",
-            aliases = {"-TP"})
-    private String trustorePassword = "";
+    @CommandLine.Option(names = {"-tp", "--trustore-password"}, description = "The truststore password")
+    private String trustorePassword = "wso2carbon";
 
-    @Option(name = "--force",
-            usage = "Force the deployment, undeploy any existing version and deploy new version",
-            aliases = {"-FO"})
-    private boolean forceDeploy = false;
-
-    @Option(name = "--file",
-            usage = "Provide the path to capp file.",
-            aliases = {"-F"},
-            required = true)
-    private String carFileLocation = "";
-
-    @Option(name = "--insecure",
-            usage = "Disable Hostname Verification",
-            aliases = {"-K"})
+    @CommandLine.Option(names = {"-k", "--insecure"}, description = "Disable Hostname Verification")
     private boolean insecure = false;
 
-    public DeployCommand() {}
+    @CommandLine.Option(names = {"-fo", "--force"}, description = "Force the deployment, undeploy any existing version and deploy new version")
+    private boolean forceDeploy = false;
+
+    @CommandLine.Option(names = {"-f", "--file"}, description = "Provide the path to capp file.", required = true)
+    private String carFileLocation = "";
 
     @Override
-    public void execute() throws CommandExecutionException {
+    public void run() {
         Utils.setUpKeystore(trustoreLocation, trustorePassword, insecure);
         try {
             File carFile = new File(carFileLocation);
@@ -90,7 +67,7 @@ public class DeployCommand implements Command {
             }
             client.deployCApp(carFile);
         } catch (Exception e) {
-            throw new CommandExecutionException("Error while executing deploy command", e);
+            Utils.handleError(e);
         }
     }
 }
