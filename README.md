@@ -1,47 +1,47 @@
 # WSO2 Carbon Application Manager
-This is a utility client which is capable of managing carbon application in remote WSO2 servers.
+This is a utility client which is capable of managing carbon application in remote WSO2 servers. The client is written in Java and compiled to a native executable using GraalVM. So there is no need for a JVM to run the client. Both the native executable and the executable uber Jar is available.
 
 ## Supported Operations
 
 ### Deploy CApps
 The deploy operation allows you to deploy a given carbon application.
 ````
-java -jar capp-manager-1.0.0.jar deploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --file ./cicd-demo-capp_1.0.1-SNAPSHOT.car
+capp-manager-1.0.3 deploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --file ./cicd-demo-capp_1.0.1-SNAPSHOT.car
 ````
 Also you can use the --force option which will undeploy an existing carbon app and deploy the new application. 
 ```
-java -jar capp-manager-1.0.0.jar deploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --file ./cicd-demo-capp_1.0.1-SNAPSHOT.car --force
+capp-manager-1.0.3 deploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --file ./cicd-demo-capp_1.0.1-SNAPSHOT.car --force
 ```
 ### Undeploy CApp
 This operation allows you to undeploy a specified CApp. You have to specify the carbon application name only. 
 ````
-java -jar capp-manager-1.0.0.jar undeploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp
+capp-manager-1.0.3 undeploy --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp
 ````
 ### List Apps
 The list operation allows you to list all the carbon applications that are already deployed in the server.
 ````
-java -jar capp-manager-1.0.0.jar list-apps --server https://localhost:9443 --trustore-location ./security/client-truststore.jks --trustore-password wso2carbon --username admin --password admin
+capp-manager-1.0.3 list-apps --server https://localhost:9443 --trustore-location ./security/client-truststore.jks --trustore-password wso2carbon --username admin --password admin
 ````
 If you want to get a processable output you can only read the standard out.
 ````
-java -jar capp-manager-1.0.0.jar list-apps --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin 2> /dev/null
+capp-manager-1.0.3 list-apps --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin 2> /dev/null
 ````
 ### Download CApp
 The download operation allows you to download the specified carbon application to a given location.
 ````
-java -jar capp-manager-1.0.0.jar download --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp --destination ./
+capp-manager-1.0.3 download --server https://localhost:9443 --trustore-location ./client-truststore.jks --trustore-password wso2carbon --username admin --password admin --app-name cicd-demo-capp --destination ./
 ````
 
 ### Insecure Connection
 You can connect to the remote server insecurely as well. For this you can specify the `-K` or `--unsecure` option. In this case you can ommit using the `--trustore-location` option as well. Example below.
 
 ```
-java -jar capp-manager-0.1.2.jar list-apps --server https://localhost:9443 --username admin --password admin -K
+capp-manager-0.1.3 list-apps --server https://localhost:9443 --username admin --password admin -K
 ```
 
 ## Instructions for Usage
 ### Building the client
-First clone the source code and then execute `mvn clean install` which will generate the executable uber Jar in the target directory.
+First clone the source code and then execute `mvn clean install` which will generate the executable uber Jar in the target directory. At the moment native executable creation is not done with the build process, rather it's done via a Github workflow.
 
 ### Importing certificates to access remote servers. 
 
@@ -61,5 +61,5 @@ The log file will be created at <Execution_Location>/logs/capp-client.logs
 If you only wants the standard error printed in the console you can pipe the std error to a different file.
 
 ````
-e.g: java -jar capp-manager-0.1.2.jar help 2> /dev/null
+e.g: capp-manager-0.1.3 help 2> /dev/null
 ````
