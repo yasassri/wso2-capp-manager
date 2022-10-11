@@ -9,6 +9,7 @@ import picocli.CommandLine.Option;
 
 @Command(name = "list-apps", description = "Lists already deployed carbon applications")
 public class ListAppsCommand implements Runnable {
+
     public ListAppsCommand() {
     }
 

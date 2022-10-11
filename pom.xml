@@ -1,195 +1,242 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.wso2.capp.client</groupId>
-	<artifactId>capp-manager</artifactId>
-	<version>0.1.3</version>
-	<packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.wso2.capp.client</groupId>
+    <artifactId>capp-manager</artifactId>
+    <version>0.1.3</version>
+    <packaging>jar</packaging>
 
-	<name>Maven CAR Deploy Client</name>
+    <name>Maven CAR Deploy Client</name>
 
-	<description>Client which deploys the generated CAR artifacts to remote/local Carbon Servers.</description>
-	<repositories>
-		<repository>
-			<id>wso2-nexus</id>
-			<name>WSO2 internal Repository</name>
-			<url>https://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-	</repositories>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>source-code-generation</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<path id="wsdl2java.classpath">
-									<pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/1.6.1-wso2v41/axis2-client-1.6.1-wso2v41.jar" />
-									<pathelement location="${settings.localRepository}/org/apache/axis2/wso2/axis2/1.6.1-wso2v40/axis2-1.6.1-wso2v40.jar" />
-									<pathelement location="${settings.localRepository}/wsdl4j/wso2/wsdl4j/1.6.2.wso2v4/1.6.2.wso2v4.wso2v2.jar" />
-									<pathelement location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/1.2.11-wso2v16/axiom-1.2.11-wso2v16.jar" />
-									<pathelement location="${settings.localRepository}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
-								</path>
-								<java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-									<arg line="-uri src/main/resources/ApplicationAdmin.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://mgt.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub,http://mgt.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.types.axis2" />
-									<classpath refid="wsdl2java.classpath" />
-								</java>
-								<java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-									<arg line="-uri src/main/resources/CarbonAppUploader.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://upload.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub.upload,http://upload.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.upload.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.upload.types.axis2" />
-									<classpath refid="wsdl2java.classpath" />
-								</java>
-								<java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
-									<arg line="-uri src/main/resources/AuthenticationAdmin.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://upload.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub.upload,http://upload.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.upload.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.upload.types.axis2" />
-									<classpath refid="wsdl2java.classpath" />
-								</java>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>
-									${project.build.directory}/generated-sources/src
-								</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>17</source>
-					<target>17</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
+    <description>Client which deploys the generated CAR artifacts to remote/local Carbon Servers.</description>
+    <repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>https://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>source-code-generation</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <path id="wsdl2java.classpath">
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/axis2/wso2/axis2-client/1.6.1-wso2v41/axis2-client-1.6.1-wso2v41.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/axis2/wso2/axis2/1.6.1-wso2v40/axis2-1.6.1-wso2v40.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/wsdl4j/wso2/wsdl4j/1.6.2.wso2v4/1.6.2.wso2v4.wso2v2.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/org/apache/ws/commons/axiom/wso2/axiom/1.2.11-wso2v16/axiom-1.2.11-wso2v16.jar"/>
+                                    <pathelement
+                                            location="${settings.localRepository}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
+                                </path>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/ApplicationAdmin.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://mgt.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub,http://mgt.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.types.axis2"/>
+                                    <classpath refid="wsdl2java.classpath"/>
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/CarbonAppUploader.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://upload.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub.upload,http://upload.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.upload.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.upload.types.axis2"/>
+                                    <classpath refid="wsdl2java.classpath"/>
+                                </java>
+                                <java classname="org.apache.axis2.wsdl.WSDL2Java" fork="true">
+                                    <arg line="-uri src/main/resources/AuthenticationAdmin.wsdl -u -uw -o ${project.build.directory}/generated-sources -p org.wso2.carbon.stub -ns2p http://upload.application.carbon.wso2.org=org.wso2.carbon.application.mgt.stub.upload,http://upload.application.carbon.wso2.org/xsd=org.wso2.carbon.application.mgt.stub.upload.types.carbon,http://org.apache.axis2/xsd=org.wso2.carbon.application.mgt.stub.upload.types.axis2"/>
+                                    <classpath refid="wsdl2java.classpath"/>
+                                </java>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>
+                                    ${project.build.directory}/generated-sources/src
+                                </source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+<!--                    <annotationProcessorPaths>-->
+<!--                        <path>-->
+<!--                            <groupId>info.picocli</groupId>-->
+<!--                            <artifactId>picocli-codegen</artifactId>-->
+<!--                            <version>4.6.3</version>-->
+<!--                        </path>-->
+<!--                    </annotationProcessorPaths>-->
+                </configuration>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>3.0.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>generateGraalReflectionConfig</id>-->
+<!--                        <phase>process-classes</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>java</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <includeProjectDependencies>true</includeProjectDependencies>-->
+<!--                    <includePluginDependencies>true</includePluginDependencies>-->
+<!--                    <mainClass>picocli.codegen.aot.graalvm.ReflectionConfigGenerator</mainClass>-->
+<!--                    <arguments>-->
+<!--                        <argument>-->
+<!--                            &#45;&#45;output=target/classes/META-INF/native-image/${project.groupId}/${project.artifactId}/reflect-config.json-->
+<!--                        </argument>-->
+<!--                        <argument>com.your.package.YourCommand1</argument>-->
+<!--                        <argument>com.your.package.YourCommand2</argument>-->
+<!--                    </arguments>-->
+<!--                </configuration>-->
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>info.picocli</groupId>-->
+<!--                        <artifactId>picocli-codegen</artifactId>-->
+<!--                        <version>4.6.3</version>-->
+<!--                        <type>jar</type>-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
+<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
 
-							<transformers>
-								<transformer
-										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<!-- Main class -->
-									<mainClass>org.wso2.capp.client.Main</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>info.picocli</groupId>
-			<artifactId>picocli</artifactId>
-			<version>4.6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1.0-wso2v6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2.wso2</groupId>
-			<artifactId>axis2-client</artifactId>
-			<version>1.6.1-wso2v41</version>
-<!--			<scope>provided</scope>-->
-			<exclusions>
-				<exclusion>
-					<groupId>org.wso2.orbit.commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
-				</exclusion>
-<!--				<exclusion>-->
-<!--					<groupId>org.wso2.securevault</groupId>-->
-<!--					<artifactId>org.wso2.securevault</artifactId>-->
-<!--				</exclusion>-->
-				<exclusion>
-					<groupId>commons-codec.wso2</groupId>
-					<artifactId>commons-codec</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2.wso2</groupId>
-			<artifactId>axis2</artifactId>
-			<version>1.6.1-wso2v40</version>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.maven</groupId>
-			<artifactId>org.wso2.maven.utils</artifactId>
-			<version>5.2.16</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>wsdl4j.wso2</groupId>
-			<artifactId>wsdl4j</artifactId>
-			<version>1.6.2.wso2v4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ws.commons.axiom.wso2</groupId>
-			<artifactId>axiom</artifactId>
-			<version>1.2.11-wso2v16</version>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.apache.ws.commons.schema.wso2</groupId>-->
-<!--			<artifactId>XmlSchema</artifactId>-->
-<!--			<version>${org.apache.ws.commons.schema.wso2.xmlschema.version}</version>-->
-<!--		</dependency>-->
-		<!--Logging dependencies-->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.17.1</version>
-		</dependency>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- Main class -->
+                                    <mainClass>org.wso2.capp.client.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1.0-wso2v6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2-client</artifactId>
+            <version>1.6.1-wso2v41</version>
+            <!--			<scope>provided</scope>-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.wso2.orbit.commons-httpclient</groupId>
+                    <artifactId>commons-httpclient</artifactId>
+                </exclusion>
+                <!--				<exclusion>-->
+                <!--					<groupId>org.wso2.securevault</groupId>-->
+                <!--					<artifactId>org.wso2.securevault</artifactId>-->
+                <!--				</exclusion>-->
+                <exclusion>
+                    <groupId>commons-codec.wso2</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+            <version>1.6.1-wso2v40</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.maven</groupId>
+            <artifactId>org.wso2.maven.utils</artifactId>
+            <version>5.2.16</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j.wso2</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.6.2.wso2v4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+            <artifactId>axiom</artifactId>
+            <version>1.2.11-wso2v16</version>
+        </dependency>
+        <!--		<dependency>-->
+        <!--			<groupId>org.apache.ws.commons.schema.wso2</groupId>-->
+        <!--			<artifactId>XmlSchema</artifactId>-->
+        <!--			<version>${org.apache.ws.commons.schema.wso2.xmlschema.version}</version>-->
+        <!--		</dependency>-->
+        <!--Logging dependencies-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.17.1</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.17.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
